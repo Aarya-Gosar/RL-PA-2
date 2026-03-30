@@ -103,7 +103,7 @@ def log_to_csv(episode, reward, epsilon, steps, seed, folder="logs"):
 
 truncation_length = 2000
 num_episodes = 2000
-memory_size =  min(2000,num_episodes) * truncation_length #per action | roughly 50 episodes
+memory_size =  min(num_episodes,2000) * truncation_length #per action | roughly 50 episodes
 batch_size = 32 # For each action
 hard_update_time = 10000 #roughly 5 episodes
 
@@ -118,13 +118,14 @@ env.reset()
 rewards_all_seeds = []
 num_seeds = 15
 
-trunc_lens = [2000]
+truncation_length = 2000
+replay_factors_list = [2,4,8]
 
-for truncation_length in trunc_lens:
+for replay_factor in replay_factors_list:
     env = gym.make("MountainCar-v0" , max_episode_steps=truncation_length)
     env.reset()
 
-    for seed in range(1,num_seeds):
+    for seed in range(5,num_seeds):
         print(f"SEED Number: {seed}")
         random.seed(seed)
         np.random.seed(seed)
@@ -168,7 +169,8 @@ for truncation_length in trunc_lens:
                 terminal = terminated or truncated
                 buffer[action].append([state,action,reward,next_state,terminal])
                 prev_state = next_state
-                improve_policy(buffer, policy_network, target_network, optimizer, batch_size, gamma)
+                for _ in range(replay_factor):
+                    improve_policy(buffer, policy_network, target_network, optimizer, batch_size, gamma)
                 if(global_steps % hard_update_time == 0):
                     hard_update(policy_network,target_network)
                 if(terminal):
@@ -177,7 +179,7 @@ for truncation_length in trunc_lens:
 
 
             #Log our data
-            log_to_csv(episode, total_reward, epsilon, t, seed,folder=f"logs-10xqueue")
+            log_to_csv(episode, total_reward, epsilon, t, seed,folder=f"logs-replay{replay_factor}")
             if episode % 50 == 0 or episode == num_episodes - 1:
                 save_checkpoint(
                     policy_network.state_dict(), 
@@ -185,7 +187,7 @@ for truncation_length in trunc_lens:
                     episode, 
                     epsilon, 
                     seed,
-                    folder = f"checkpoints-10xqueue"
+                    folder = f"checkpoints-replay{replay_factor}"
                 )
 
 
