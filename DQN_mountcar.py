@@ -91,7 +91,7 @@ def log_to_csv(episode, reward, epsilon, steps, seed, folder="logs"):
     if not os.path.exists(folder):
         os.makedirs(folder)
         
-    log_path = os.path.join(folder, f"train_log_seed{seed}.csv")
+    log_path = os.path.join(folder, f"train_log_seed{int(input("enter file number"))}.csv")
     file_exists = os.path.isfile(log_path)
     
     with open(log_path, mode='a', newline='') as f:
@@ -110,13 +110,11 @@ hard_update_time = 10000 #roughly 5 episodes
 gamma = 0.99
 epsilon = 0.99
 alpha = 0.1
-env = gym.make("MountainCar-v0" , max_episode_steps=truncation_length)
 # Observation space = [position,velocity]
 # Action space  = [0,1,2] left,stay,right
-env.reset()
 
 rewards_all_seeds = []
-num_seeds = 15
+num_seeds = 2
 
 trunc_lens = [2000]
 
@@ -124,7 +122,7 @@ for truncation_length in trunc_lens:
     env = gym.make("MountainCar-v0" , max_episode_steps=truncation_length)
     env.reset()
 
-    for seed in range(1,num_seeds):
+    for seed in range(num_seeds):
         print(f"SEED Number: {seed}")
         random.seed(seed)
         np.random.seed(seed)
@@ -177,7 +175,7 @@ for truncation_length in trunc_lens:
 
 
             #Log our data
-            log_to_csv(episode, total_reward, epsilon, t, seed,folder=f"logs-10xqueue")
+            log_to_csv(episode, total_reward, epsilon, t, seed,folder=f"logs")
             if episode % 50 == 0 or episode == num_episodes - 1:
                 save_checkpoint(
                     policy_network.state_dict(), 
@@ -185,7 +183,7 @@ for truncation_length in trunc_lens:
                     episode, 
                     epsilon, 
                     seed,
-                    folder = f"checkpoints-10xqueue"
+                    folder = f"checkpoints"
                 )
 
 
