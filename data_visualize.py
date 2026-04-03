@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 # 1. Define your folders and a list of colors for the plot
-folders = ["logs-10xqueue", "logs-replay2", "logs-replay4", "logs-replay8"]
+folders = ["logs-replay1", "logs-replay2", "logs-replay4", "logs-replay8"]
 colors = ['blue', 'red', 'green' , "orange"]
 window_size = 50 
 
