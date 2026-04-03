@@ -184,6 +184,7 @@ num_episodes = 2000
 memory_size = min(2000, num_episodes) * truncation_length
 batch_size = 32
 hard_update_time = 10000
+replay_factor = 8
 
 gamma = 0.99
 epsilon = 0.99
@@ -246,14 +247,15 @@ for truncation_length in trunc_lens:
                 terminal = terminated or truncated
                 buffer.add([state, action, reward, next_state, terminal])
                 prev_state = next_state
-                improve_policy(buffer, policy_network, target_network, optimizer, batch_size, gamma, beta)
+                for _ in range(replay_factor):
+                    improve_policy(buffer, policy_network, target_network, optimizer, batch_size, gamma, beta)
                 if global_steps % hard_update_time == 0:
                     hard_update(policy_network, target_network)
                 if terminal:
                     break
             rewards.append(total_reward)
 
-            log_to_csv(episode, total_reward, epsilon, t, seed, folder="logs-per")
+            log_to_csv(episode, total_reward, epsilon, t, seed, folder=f"logs-per-replay{replay_factor}")
             if episode % 50 == 0 or episode == num_episodes - 1:
                 save_checkpoint(
                     policy_network.state_dict(),
