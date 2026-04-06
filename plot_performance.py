@@ -43,4 +43,4 @@ def plot_and_save(log_pattern, output_path):
     plt.close()
 
 
-plot_and_save("logs-per/train_log_seed*.csv", "per_performance_plot.png")
+plot_and_save("logs-per-replay4/train_log_seed*.csv", "per4_performance_plot.png")

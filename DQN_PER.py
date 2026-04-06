@@ -184,7 +184,7 @@ num_episodes = 2000
 memory_size = min(2000, num_episodes) * truncation_length
 batch_size = 32
 hard_update_time = 10000
-replay_factor = 8
+replay_factor = 4
 
 gamma = 0.99
 epsilon = 0.99
