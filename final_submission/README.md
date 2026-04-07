@@ -4,8 +4,12 @@
 gymnasium==1.2.3
 matplotlib==3.10.8
 numpy==2.4.4
+pandas==3.0.2
+scipy==1.17.1
+seaborn==0.13.2
 torch==2.5.1+cu121
 tqdm==4.67.1
+
 
 python version: 3.12.5
 ```
@@ -70,4 +74,23 @@ python DQN_PER.py
 `/logs-per-replay{replay_factor}/` Contains the training logs utilizing prioritized sampling.
 
 `/checkpoints-per-replay{replay_factor}/` Stores the PyTorch model weights (.pth), saving every 50 episodes and maintaining a "latest" version.
+
+## Analysis code
+
+This script is used to plot the confidence intervals of our results. 
+
+We have included logs to plot them for the base case with `replay_factor=1`
+
+```bash
+python confidence_plot.py
+```
+
+
+**_NOTE:_**: We have also included code for other statistical analysis but not the logs to run the same. They wont run without generating the logs
+
+namely:
+`tolerance_intervals.py , distribution_visualize.py , senschart.py`
+
+
+
 
